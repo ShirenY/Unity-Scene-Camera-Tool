@@ -99,7 +99,7 @@ public class SceneCameraTool : EditorWindow
         // Update the position changes from scene view control
         controledProperties.Copy(sceneViewCam, targetParent);
 
-        if (syncCam)
+        if (syncCam && targetCam != null)
         {
             controledProperties.Paste(targetCam);
             gameView.Repaint();
