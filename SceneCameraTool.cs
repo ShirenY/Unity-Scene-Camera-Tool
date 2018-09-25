@@ -20,6 +20,21 @@ public class SceneCameraTool : EditorWindow
 
     bool resetFovOnce = false;
 
+    EditorWindow _gameView = null;
+    EditorWindow gameView
+    {
+        get
+        {
+            if (_gameView != null)
+                return _gameView;
+
+            System.Reflection.Assembly assembly = typeof(UnityEditor.EditorWindow).Assembly;
+            System.Type type = assembly.GetType("UnityEditor.GameView");
+            _gameView = EditorWindow.GetWindow(type);
+            return gameView;
+        }
+    }
+
     Transform targetParent
     {
         get
@@ -80,11 +95,15 @@ public class SceneCameraTool : EditorWindow
         if (sceneViewCam.transform.hasChanged)
             SRepaint();
 
-        if (syncCam)
-            controledProperties.Paste(targetCam);
-
+        
         // Update the position changes from scene view control
         controledProperties.Copy(sceneViewCam, targetParent);
+
+        if (syncCam)
+        {
+            controledProperties.Paste(targetCam);
+            gameView.Repaint();
+        }
     }
 
     void OnGUI()
