@@ -2,7 +2,7 @@ A Unity editor tool to sync scene view camera and the game camera.
 
 I think you can get the idea pretty quick from the gif.
 
-![](readmeRes\record.gif)
+![](readmeRes/record.gif)
 
 
 
