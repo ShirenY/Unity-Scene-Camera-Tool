@@ -15,7 +15,7 @@ public class SceneCameraTool : EditorWindow
     bool syncCam = false;
     [SerializeField]
     bool showSceneCamData = true;
-
+    [SerializeField]
     CamProperties controledProperties = new CamProperties();
 
     bool resetFovOnce = false;
@@ -123,7 +123,7 @@ public class SceneCameraTool : EditorWindow
         if (GUI.changed)
             SceneView.lastActiveSceneView.Repaint();
 
-        // Scene camera inpsector
+        // Scene camera Inspector
         HorizontalLine.Draw();
         EditorGUILayout.LabelField(EditorGUIUtility.ObjectContent(SceneView.lastActiveSceneView.camera, typeof(Camera)));
 
@@ -188,6 +188,7 @@ public class SceneCameraTool : EditorWindow
         scene_view.pivot = position + rotation * new Vector3(0, 0, scene_view.cameraDistance);
     }
 
+    [System.Serializable]
     private class CamProperties
     {
         public float fov = 55f;
