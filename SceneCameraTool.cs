@@ -169,7 +169,7 @@ public class SceneCameraTool : EditorWindow
             globalPosition = targetParent.TransformPoint(controledProperties.localPosition);
 
         Quaternion globalRotation = controledProperties.localRotation;
-        if(targetParent != null)
+        if (targetParent != null)
             globalRotation = targetParent.transform.rotation * globalRotation;
 
         SetSceneCamTransformData(globalPosition, globalRotation);
@@ -203,9 +203,18 @@ public class SceneCameraTool : EditorWindow
             fov = sceneCamera.fieldOfView;
 
             Transform targetTransform = sceneCamera.transform;
-            localPosition = relativeParent.InverseTransformPoint( targetTransform.position );
 
-            Quaternion newLocalRotation = Quaternion.Inverse(relativeParent.rotation) * targetTransform.rotation;
+            Quaternion newLocalRotation;
+            if (relativeParent != null)
+            {
+                localPosition = relativeParent.InverseTransformPoint(targetTransform.position);
+                newLocalRotation = Quaternion.Inverse(relativeParent.rotation) * targetTransform.rotation;
+            }
+            else
+            {
+                localPosition = targetTransform.position;
+                newLocalRotation = targetTransform.rotation;
+            }
 
             if (localRotation != newLocalRotation)
             {
