@@ -61,12 +61,13 @@ public class SceneCameraTool : EditorWindow
         instance = this;
         targetCam = Camera.main;
 
-        SceneViewHiddenApi.AddOnPreSceneGUIDelegate(OnPreSceneGUI);
+        UnityEditor.SceneView.beforeSceneGui-=OnPreSceneGUI;
+        UnityEditor.SceneView.beforeSceneGui+=OnPreSceneGUI;
     }
 
     private void OnDisable()
     {
-        SceneViewHiddenApi.RemoveOnPreSceneGUIDelegate(OnPreSceneGUI);
+        UnityEditor.SceneView.beforeSceneGui-=OnPreSceneGUI;
     }
 
     public static void SRepaint()
@@ -95,7 +96,7 @@ public class SceneCameraTool : EditorWindow
         if (sceneViewCam.transform.hasChanged)
             SRepaint();
 
-        
+
         // Update the position changes from scene view control
         controledProperties.Copy(sceneViewCam, targetParent);
 
@@ -283,44 +284,6 @@ public class SceneCameraTool : EditorWindow
 
             serializedTargetTransform = new SerializedObject(targetTransform);
             serializedEulerHintProp = serializedTargetTransform.FindProperty("m_LocalEulerAnglesHint");
-        }
-    }
-
-    static class SceneViewHiddenApi
-    {
-        static readonly Type typeSceneView = typeof(UnityEditor.SceneView);
-        static readonly FieldInfo fi_onPreSceneGUIDelegateFieldInfo = typeSceneView.GetField(
-            "onPreSceneGUIDelegate"
-            , BindingFlags.Static | BindingFlags.NonPublic | BindingFlags.Public
-        );
-
-        static SceneView.OnSceneFunc onPreSceneGUIDelegate
-        {
-            get
-            {
-                if (fi_onPreSceneGUIDelegateFieldInfo == null)
-                    return null;
-                return fi_onPreSceneGUIDelegateFieldInfo.GetValue(null) as SceneView.OnSceneFunc;
-            }
-
-            set
-            {
-                if (fi_onPreSceneGUIDelegateFieldInfo == null)
-                    return;
-                fi_onPreSceneGUIDelegateFieldInfo.SetValue(null, value);
-            }
-        }
-
-        // Add delegate to UnityEditor.SceneView.onPreSceneGUIDelegate
-        public static void AddOnPreSceneGUIDelegate(SceneView.OnSceneFunc func)
-        {
-            onPreSceneGUIDelegate = Delegate.Combine(func, onPreSceneGUIDelegate) as SceneView.OnSceneFunc;
-        }
-
-        // Remove delegate from UnityEditor.SceneView.onPreSceneGUIDelegate
-        public static void RemoveOnPreSceneGUIDelegate(SceneView.OnSceneFunc func)
-        {
-            onPreSceneGUIDelegate = Delegate.Remove(func, onPreSceneGUIDelegate) as SceneView.OnSceneFunc;
         }
     }
 
